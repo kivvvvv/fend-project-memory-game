@@ -10,19 +10,22 @@ var CARDS = ['fa-diamond','fa-diamond','fa-paper-plane-o','fa-paper-plane-o','fa
  *   - add each card's HTML to the page
  */
 function resetDeck() {
-    var allCards = $( '.deck' ).children();
+    var allCards = $('.deck').children();
     var arrayFaCards =  shuffle(CARDS);
     allCards.each(function () {
-        //$( this ).removeClass( 'open show match' );
-        $( this ).addClass( 'open show' );
-        var card = $( this ).children();
-        $ ( card ).addClass(arrayFaCards.pop());
+        $( this ).removeClass('open show match');
+        //$( this ).addClass( 'open show' );
+        $( this ).children().addClass(arrayFaCards.pop());
     })
 }
 
 $(function() {
     resetDeck();
+    $('.deck').on('click', 'li', function() {
+        $(this).toggleClass('open show');
+    })
 });
+
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
