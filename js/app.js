@@ -1,15 +1,28 @@
 /*
  * Create a list that holds all of your cards
  */
-
-
+var CARDS = ['fa-diamond','fa-diamond','fa-paper-plane-o','fa-paper-plane-o','fa-anchor','fa-anchor','fa-bolt','fa-bolt',
+    'fa-cube','fa-cube','fa-leaf','fa-leaf','fa-bomb','fa-bomb','fa-bicycle','fa-bicycle'];
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+function resetDeck() {
+    var allCards = $( '.deck' ).children();
+    var arrayFaCards =  shuffle(CARDS);
+    allCards.each(function () {
+        //$( this ).removeClass( 'open show match' );
+        $( this ).addClass( 'open show' );
+        var card = $( this ).children();
+        $ ( card ).addClass(arrayFaCards.pop());
+    })
+}
 
+$(function() {
+    resetDeck();
+});
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
