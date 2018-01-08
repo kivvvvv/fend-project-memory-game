@@ -1,6 +1,7 @@
 /*
  * Create a list that holds all of your cards
  */
+
 var CARDS = ['fa-diamond','fa-diamond','fa-paper-plane-o','fa-paper-plane-o','fa-anchor','fa-anchor','fa-bolt','fa-bolt',
     'fa-cube','fa-cube','fa-leaf','fa-leaf','fa-bomb','fa-bomb','fa-bicycle','fa-bicycle'];
 /*
@@ -9,22 +10,6 @@ var CARDS = ['fa-diamond','fa-diamond','fa-paper-plane-o','fa-paper-plane-o','fa
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-function resetDeck() {
-    var allCards = $('.deck').children();
-    var arrayFaCards =  shuffle(CARDS);
-    allCards.each(function () {
-        $( this ).removeClass('open show match');
-        //$( this ).addClass( 'open show' );
-        $( this ).children().addClass(arrayFaCards.pop());
-    })
-}
-
-$(function() {
-    resetDeck();
-    $('.deck').on('click', 'li', function() {
-        $(this).toggleClass('open show');
-    })
-});
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -40,6 +25,30 @@ function shuffle(array) {
 
     return array;
 }
+
+function resetDeck($ul) {
+    var $li = $($ul).children();
+    var arrayShuffledCards =  shuffle(CARDS);
+    $li.each(function () {
+        var $i = $(this).children();
+
+        resetCardStatus($(this));
+        shuffleCardValue($i, arrayShuffledCards.pop())
+    })
+}
+
+function resetCardStatus($li) {
+    $li.removeClass('open show match');
+}
+
+function shuffleCardValue($i, value) {
+    $i.addClass(value);
+}
+
+$(function() {
+    var $ul = $('.deck');
+    resetDeck($ul);
+});
 
 
 /*
