@@ -26,28 +26,28 @@ function shuffle(array) {
     return array;
 }
 
-function resetDeck($ul) {
-    var $li = $($ul).children();
+function resetDeck($deckClass) {
+    var $cardsClass = $($deckClass).children();
     var arrayShuffledCards =  shuffle(CARDS);
-    $li.each(function () {
-        var $i = $(this).children();
+    $cardsClass.each(function () {
+        var $faClass = $(this).children();
 
         resetCardStatus($(this));
-        shuffleCardValue($i, arrayShuffledCards.pop())
+        shuffleCardValue($faClass, arrayShuffledCards.pop())
     })
 }
 
-function resetCardStatus($li) {
-    $li.removeClass('open show match');
+function resetCardStatus($cardsClass) {
+    $cardsClass.removeClass('open show match');
 }
 
-function shuffleCardValue($i, value) {
-    $i.addClass(value);
+function shuffleCardValue($faClass, value) {
+    $faClass.addClass(value);
 }
 
 $(function() {
-    var $ul = $('.deck');
-    resetDeck($ul);
+    var $deckClass = $('.deck');
+    resetDeck($deckClass);
 });
 
 
