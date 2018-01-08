@@ -47,7 +47,17 @@ function shuffleCardValue($faClass, value) {
 
 $(function() {
     var $deckClass = $('.deck');
+    var $cardsClass = $deckClass.children();
+
     resetDeck($deckClass);
+
+    $cardsClass.on('click', function() {
+        if (!$(this).is('.open,.show,.match')) {
+            $(this).addClass('open show');
+        } else {
+            
+        }
+    })
 });
 
 
