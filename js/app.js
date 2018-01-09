@@ -27,9 +27,9 @@ function shuffle(array) {
 }
 
 function resetDeck($deckClass) {
-    var $cardsClass = $($deckClass).children();
+    var $cardClass = $($deckClass).children();
     var arrayShuffledCards =  shuffle(CARDS);
-    $cardsClass.each(function () {
+    $cardClass.each(function () {
         var $faClass = $(this).children();
 
         resetCardStatus($(this));
@@ -37,8 +37,8 @@ function resetDeck($deckClass) {
     })
 }
 
-function resetCardStatus($cardsClass) {
-    $cardsClass.removeClass('open show match');
+function resetCardStatus($cardClass) {
+    $cardClass.removeClass('open show match');
 }
 
 function shuffleCardValue($faClass, value) {
@@ -47,15 +47,27 @@ function shuffleCardValue($faClass, value) {
 
 $(function() {
     var $deckClass = $('.deck');
-    var $cardsClass = $deckClass.children();
-
+    var $cardClass = $deckClass.children();
+    var $card_show = null;
     resetDeck($deckClass);
 
-    $cardsClass.on('click', function() {
-        if (!$(this).is('.open,.show,.match')) {
-            $(this).addClass('open show');
+    $cardClass.on('click', function() {
+        if ($card_show) {
+            if ($(this).attr('class') === 'card') {
+                if ($card_show.children().attr('class') === $(this).children().attr('class')) {
+                    $card_show.addClass('match');
+                    $(this).addClass('match');
+                    $card_show.off('click');
+                    $(this).off('click');
+                } else {
+                    resetCardStatus($card_show);
+                    resetCardStatus($(this));
+                }
+                $card_show = null;
+            }
         } else {
-            
+            $(this).addClass('open show');
+            $card_show = $(this);
         }
     })
 });
