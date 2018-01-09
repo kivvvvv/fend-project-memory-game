@@ -45,6 +45,13 @@ function shuffleCardValue($faClass, value) {
     $faClass.addClass(value);
 }
 
+function showMatchedCard($card1, $card2) {
+    $card1.addClass('match');
+    $card2.addClass('match');
+    $card1.off('click');
+    $card2.off('click');
+}
+
 $(function() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
@@ -55,10 +62,7 @@ $(function() {
         if ($card_show) {
             if ($(this).attr('class') === 'card') {
                 if ($card_show.children().attr('class') === $(this).children().attr('class')) {
-                    $card_show.addClass('match');
-                    $(this).addClass('match');
-                    $card_show.off('click');
-                    $(this).off('click');
+                    showMatchedCard($card_show, $(this));
                 } else {
                     resetCardStatus($card_show);
                     resetCardStatus($(this));
