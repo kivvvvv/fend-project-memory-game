@@ -38,7 +38,8 @@ function resetDeck($deckClass) {
 }
 
 function resetCardStatus($cardClass) {
-    $cardClass.removeClass('open show match');
+    $cardClass.removeClass();
+    $cardClass.addClass('card');
 }
 
 function shuffleCardValue($faClass, value) {
@@ -46,10 +47,20 @@ function shuffleCardValue($faClass, value) {
 }
 
 function showMatchedCard($card1, $card2) {
-    $card1.addClass('match');
-    $card2.addClass('match');
+    $card1.addClass('open show match animated rubberBand');
+    $card2.addClass('open show match animated rubberBand');
     $card1.off('click');
     $card2.off('click');
+}
+
+function showUnmatchedCard($card1, $card2) {
+    var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    $card1.addClass('open show animated shake').one(sAnimationEnd, function () {
+        resetCardStatus($card1);
+    });
+    $card2.addClass('open show animated shake').one(sAnimationEnd, function () {
+        resetCardStatus($card2);
+    });
 }
 
 $(function() {
@@ -64,6 +75,7 @@ $(function() {
                 if ($card_show.children().attr('class') === $(this).children().attr('class')) {
                     showMatchedCard($card_show, $(this));
                 } else {
+                    //showUnmatchedCard($card_show, $(this));
                     resetCardStatus($card_show);
                     resetCardStatus($(this));
                 }
@@ -73,7 +85,7 @@ $(function() {
             $(this).addClass('open show');
             $card_show = $(this);
         }
-    })
+    });
 });
 
 
