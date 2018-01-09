@@ -55,10 +55,10 @@ function showMatchedCard($card1, $card2) {
 
 function showUnmatchedCard($card1, $card2) {
     var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    $card1.addClass('open show animated shake').one(sAnimationEnd, function () {
+    $card1.addClass('open show animated shake').one(sAnimationEnd, function() {
         resetCardStatus($card1);
     });
-    $card2.addClass('open show animated shake').one(sAnimationEnd, function () {
+    $card2.addClass('open show animated shake').one(sAnimationEnd, function() {
         resetCardStatus($card2);
     });
 }
@@ -75,9 +75,9 @@ $(function() {
                 if ($card_show.children().attr('class') === $(this).children().attr('class')) {
                     showMatchedCard($card_show, $(this));
                 } else {
-                    //showUnmatchedCard($card_show, $(this));
-                    resetCardStatus($card_show);
-                    resetCardStatus($(this));
+                    showUnmatchedCard($card_show, $(this));
+                    //resetCardStatus($card_show);
+                    //resetCardStatus($(this));
                 }
                 $card_show = null;
             }
