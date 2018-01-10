@@ -37,9 +37,12 @@ function resetDeck($deckClass) {
     })
 }
 
-function resetCardStatus($cardClass) {
+function resetCardStatus($cardClass, sAnimationEnd = null) {
     $cardClass.removeClass();
     $cardClass.addClass('card');
+    if (sAnimationEnd) {
+        $cardClass.off(sAnimationEnd);
+    }
 }
 
 function shuffleCardValue($faClass, value) {
@@ -56,10 +59,10 @@ function showMatchedCard($card1, $card2) {
 function showUnmatchedCard($card1, $card2) {
     var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
     $card1.addClass('open show animated shake').one(sAnimationEnd, function() {
-        resetCardStatus($card1);
+        resetCardStatus($card1, sAnimationEnd);
     });
     $card2.addClass('open show animated shake').one(sAnimationEnd, function() {
-        resetCardStatus($card2);
+        resetCardStatus($card2, sAnimationEnd);
     });
 }
 
@@ -76,8 +79,6 @@ $(function() {
                     showMatchedCard($card_show, $(this));
                 } else {
                     showUnmatchedCard($card_show, $(this));
-                    //resetCardStatus($card_show);
-                    //resetCardStatus($(this));
                 }
                 $card_show = null;
             }
