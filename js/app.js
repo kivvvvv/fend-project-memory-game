@@ -33,7 +33,7 @@ function resetDeck($deckClass) {
     $cardClass.each(function () {
         var $faClass = $(this).children();
 
-        resetCardStatus($(this), 'card');
+        resetCardStatus($(this), 'card open show');
         shuffleCardValue($faClass, arrayShuffledCards.pop())
     })
 }
@@ -80,21 +80,27 @@ $(function() {
     
     resetDeck($deckClass);
 
-    $cardClass.on('click', function() {
-        if ($card_show) {
-            if ($(this).attr('class') === 'card') {
-                if ($card_show.children().attr('class') === $(this).children().attr('class')) {
-                    showMatchedCard($card_show, $(this));
-                } else {
-                    showUnmatchedCard($card_show, $(this));
+    setTimeout(function() {
+        $cardClass.each(function() {
+            resetCardStatus($(this), 'card');
+        });
+        $cardClass.on('click', function() {
+            if ($card_show) {
+                if ($(this).attr('class') === 'card') {
+                    if ($card_show.children().attr('class') === $(this).children().attr('class')) {
+                        showMatchedCard($card_show, $(this));
+                    } else {
+                        showUnmatchedCard($card_show, $(this));
+                    }
+                    $card_show = null;
                 }
-                $card_show = null;
+            } else {
+                $(this).addClass('open show');
+                $card_show = $(this);
             }
-        } else {
-            $(this).addClass('open show');
-            $card_show = $(this);
-        }
-    });
+        });
+    }, 3000);
+    
 });
 
 
