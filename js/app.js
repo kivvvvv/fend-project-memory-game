@@ -29,6 +29,7 @@ function shuffle(array) {
 function resetDeck($deckClass) {
     var $cardClass = $($deckClass).children();
     var arrayShuffledCards =  shuffle(CARDS);
+    
     $cardClass.each(function () {
         var $faClass = $(this).children();
 
@@ -50,18 +51,23 @@ function shuffleCardValue($faClass, value) {
 }
 
 function showMatchedCard($card1, $card2) {
-    $card1.addClass('open show match animated rubberBand');
-    $card2.addClass('open show match animated rubberBand');
-    $card1.off('click');
-    $card2.off('click');
+    var sAnimationName = 'open show match animated rubberBand';
+    var sHandler = 'click';
+
+    $card1.addClass(sAnimationName);
+    $card2.addClass(sAnimationName);
+    $card1.off(sHandler);
+    $card2.off(sHandler);
 }
 
 function showUnmatchedCard($card1, $card2) {
     var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    $card1.addClass('open show unmatch animated shake').one(sAnimationEnd, function() {
+    var sAnimationName = 'open show unmatch animated wobble';
+
+    $card1.addClass(sAnimationName).one(sAnimationEnd, function() {
         resetCardStatus($card1, sAnimationEnd);
     });
-    $card2.addClass('open show unmatch animated shake').one(sAnimationEnd, function() {
+    $card2.addClass(sAnimationName).one(sAnimationEnd, function() {
         resetCardStatus($card2, sAnimationEnd);
     });
 }
@@ -70,6 +76,7 @@ $(function() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
     var $card_show = null;
+    
     resetDeck($deckClass);
 
     $cardClass.on('click', function() {
