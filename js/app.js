@@ -58,10 +58,10 @@ function showMatchedCard($card1, $card2) {
 
 function showUnmatchedCard($card1, $card2) {
     var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-    $card1.addClass('open show animated shake').one(sAnimationEnd, function() {
+    $card1.addClass('open show unmatch animated shake').one(sAnimationEnd, function() {
         resetCardStatus($card1, sAnimationEnd);
     });
-    $card2.addClass('open show animated shake').one(sAnimationEnd, function() {
+    $card2.addClass('open show unmatch animated shake').one(sAnimationEnd, function() {
         resetCardStatus($card2, sAnimationEnd);
     });
 }
