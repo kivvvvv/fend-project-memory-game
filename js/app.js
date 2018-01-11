@@ -29,18 +29,18 @@ function shuffle(array) {
 function resetDeck($deckClass) {
     var $cardClass = $($deckClass).children();
     var arrayShuffledCards =  shuffle(CARDS);
-    
+
     $cardClass.each(function () {
         var $faClass = $(this).children();
 
-        resetCardStatus($(this));
+        resetCardStatus($(this), 'card');
         shuffleCardValue($faClass, arrayShuffledCards.pop())
     })
 }
 
-function resetCardStatus($cardClass, sAnimationEnd = null) {
+function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
     $cardClass.removeClass();
-    $cardClass.addClass('card');
+    $cardClass.addClass(sCardStatus);
     if (sAnimationEnd) {
         $cardClass.off(sAnimationEnd);
     }
@@ -63,12 +63,13 @@ function showMatchedCard($card1, $card2) {
 function showUnmatchedCard($card1, $card2) {
     var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
     var sAnimationName = 'open show unmatch animated wobble';
+    var sCardStatus = 'card';
 
     $card1.addClass(sAnimationName).one(sAnimationEnd, function() {
-        resetCardStatus($card1, sAnimationEnd);
+        resetCardStatus($card1, sCardStatus, sAnimationEnd);
     });
     $card2.addClass(sAnimationName).one(sAnimationEnd, function() {
-        resetCardStatus($card2, sAnimationEnd);
+        resetCardStatus($card2, sCardStatus, sAnimationEnd);
     });
 }
 
