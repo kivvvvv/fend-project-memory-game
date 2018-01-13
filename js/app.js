@@ -52,25 +52,45 @@ function shuffleCardValue($faClass, value) {
 
 function showMatchedCard($card1, $card2) {
     var sAnimationName = 'open show match animated rubberBand';
-    var sHandler = 'click';
+    var sAnimationEvent = whichAnimationEvent();
 
-    $card1.addClass(sAnimationName);
-    $card2.addClass(sAnimationName);
-    $card1.off(sHandler);
-    $card2.off(sHandler);
+    $card1.addClass(sAnimationName).one(sAnimationEvent, function () {
+        $card1.off();
+    });
+    $card2.addClass(sAnimationName).one(sAnimationEvent, function () {
+        $card2.off();
+    });
 }
 
 function showUnmatchedCard($card1, $card2) {
-    var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    var sAnimationEvent = whichAnimationEvent();
     var sAnimationName = 'open show unmatch animated wobble';
     var sCardStatus = 'card';
 
-    $card1.addClass(sAnimationName).one(sAnimationEnd, function () {
-        resetCardStatus($card1, sCardStatus, sAnimationEnd);
+    $card1.addClass(sAnimationName).one(sAnimationEvent, function (event) {
+        resetCardStatus($card1, sCardStatus, event);
     });
-    $card2.addClass(sAnimationName).one(sAnimationEnd, function () {
-        resetCardStatus($card2, sCardStatus, sAnimationEnd);
+    $card2.addClass(sAnimationName).one(sAnimationEvent, function (event) {
+        resetCardStatus($card2, sCardStatus, event);
     });
+}
+
+function whichAnimationEvent() {
+    var t,
+        el = document.createElement("fakeelement");
+
+    var animations = {
+        "animation": "animationend",
+        "OAnimation": "oAnimationEnd",
+        "MozAnimation": "animationend",
+        "WebkitAnimation": "webkitAnimationEnd"
+    }
+
+    for (t in animations) {
+        if (el.style[t] !== undefined) {
+            return animations[t];
+        }
+    }
 }
 
 $(function () {
