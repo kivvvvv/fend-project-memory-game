@@ -2,8 +2,8 @@
  * Create a list that holds all of your cards
  */
 
-var CARDS = ['fa-diamond','fa-diamond','fa-paper-plane-o','fa-paper-plane-o','fa-anchor','fa-anchor','fa-bolt','fa-bolt',
-    'fa-cube','fa-cube','fa-leaf','fa-leaf','fa-bomb','fa-bomb','fa-bicycle','fa-bicycle'];
+var CARDS = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
+    'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -28,7 +28,7 @@ function shuffle(array) {
 
 function resetDeck($deckClass) {
     var $cardClass = $($deckClass).children();
-    var arrayShuffledCards =  shuffle(CARDS);
+    var arrayShuffledCards = shuffle(CARDS);
 
     $cardClass.each(function () {
         var $faClass = $(this).children();
@@ -61,30 +61,48 @@ function showMatchedCard($card1, $card2) {
 }
 
 function showUnmatchedCard($card1, $card2) {
-    var sAnimationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    var animationEvent = whichAnimationEvent();
     var sAnimationName = 'open show unmatch animated wobble';
     var sCardStatus = 'card';
 
-    $card1.addClass(sAnimationName).one(sAnimationEnd, function() {
-        resetCardStatus($card1, sCardStatus, sAnimationEnd);
+    $card1.addClass(sAnimationName).one(animationEvent, function (event) {
+        resetCardStatus($card1, sCardStatus, event);
     });
-    $card2.addClass(sAnimationName).one(sAnimationEnd, function() {
-        resetCardStatus($card2, sCardStatus, sAnimationEnd);
+    $card2.addClass(sAnimationName).one(animationEvent, function (event) {
+        resetCardStatus($card2, sCardStatus, event);
     });
 }
 
-$(function() {
+function whichAnimationEvent() {
+    var t,
+        el = document.createElement("fakeelement");
+
+    var animations = {
+        "animation": "animationend",
+        "OAnimation": "oAnimationEnd",
+        "MozAnimation": "animationend",
+        "WebkitAnimation": "webkitAnimationEnd"
+    }
+
+    for (t in animations) {
+        if (el.style[t] !== undefined) {
+            return animations[t];
+        }
+    }
+}
+
+$(function () {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
     var $card_show = null;
-    
+
     resetDeck($deckClass);
 
-    setTimeout(function() {
-        $cardClass.each(function() {
+    setTimeout(function () {
+        $cardClass.each(function () {
             resetCardStatus($(this), 'card');
         });
-        $cardClass.on('click', function() {
+        $cardClass.on('click', function () {
             if ($card_show) {
                 if ($(this).attr('class') === 'card') {
                     if ($card_show.children().attr('class') === $(this).children().attr('class')) {
@@ -100,7 +118,7 @@ $(function() {
             }
         });
     }, 3000);
-    
+
 });
 
 
