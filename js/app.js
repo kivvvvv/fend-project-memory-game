@@ -2,8 +2,6 @@
  * Create a list that holds all of your cards
  */
 
-var CARDS = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
-    'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -27,8 +25,11 @@ function shuffle(array) {
 }
 
 function resetDeck($deckClass) {
+    var arrayCards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
+    'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
     var $cardClass = $($deckClass).children();
-    var arrayShuffledCards = shuffle(CARDS);
+    var arrayShuffledCards = shuffle(arrayCards);
+    console.log(arrayShuffledCards);
 
     $cardClass.each(function () {
         var $faClass = $(this).children();
@@ -47,7 +48,8 @@ function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
 }
 
 function shuffleCardValue($faClass, value) {
-    $faClass.addClass(value);
+    $faClass.removeClass();
+    $faClass.addClass('fa ' + value);
 }
 
 function showMatchedCard($card1, $card2) {
@@ -93,7 +95,7 @@ function whichAnimationEvent() {
     }
 }
 
-$(function () {
+function startGame() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
     var $card_show = null;
@@ -120,7 +122,13 @@ $(function () {
             }
         });
     }, 3000);
+}
 
+$(function () {
+    startGame();
+    $('.restart').children().click(function () {
+        startGame();
+    });
 });
 
 
