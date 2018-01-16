@@ -3,7 +3,8 @@
  */
 
 var $CARD_SHOW = null;
-
+var SCORE = 0;
+var MOVE = 0;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -36,9 +37,10 @@ function resetDeck($deckClass) {
     $cardClass.each(function () {
         var $faClass = $(this).children();
 
-        resetCardStatus($(this), 'card open show');
         shuffleCardValue($faClass, arrayShuffledCards.pop())
-    })
+    });
+    
+    resetCardStatus($cardClass, 'card open show');
 }
 
 function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
@@ -68,7 +70,7 @@ function rebindClickCards($hiddenCards) {
     $CARD_SHOW = null;
 }
 
-function showMatchedCard($card1, $card2) {
+function showMatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
     var sAnimationName = 'open show match animated rubberBand';
     var sAnimationEvent = whichAnimationEvent();
@@ -78,7 +80,7 @@ function showMatchedCard($card1, $card2) {
     });
 }
 
-function showUnmatchedCard($card1, $card2) {
+function showUnmatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
     
     var sAnimationEvent = whichAnimationEvent();
@@ -114,6 +116,13 @@ function whichAnimationEvent() {
     }
 }
 
+function showMove() {
+    $('span.moves').text(++MOVE);
+    if (SCORE === 8) {
+        swal("Good job!", "You clicked the button! with move " + MOVE, "success");
+    }
+}
+
 function pickCard($card, $this) {
     if ($card) {
         if ($this.attr('class') === 'card') {
@@ -123,10 +132,14 @@ function pickCard($card, $this) {
 
             if ($card.children().attr('class') === $this.children().attr('class')) {
                 showMatchedCard($card, $this, $hiddenCards);
+                SCORE++;
             } else {
                 showUnmatchedCard($card, $this, $hiddenCards);
+
             }
+
             $CARD_SHOW = null;
+            showMove();
         }
     } else {
         $this.addClass('open show');
@@ -148,15 +161,23 @@ function startGame() {
             var $this = $(this);
             pickCard($CARD_SHOW, $this);
         });
-
     }, 3000);
+}
+
+function restartGame() {
+    $CARD_SHOW = null;
+    SCORE = 0;
+    MOVE = 0;
+
+    $('span.moves').text(MOVE);
+    startGame();
 }
 
 $(function () {
     startGame();
-    $('.restart').children().click(function () {
-        startGame();
-        $CARD_SHOW = null;
+    $('.restart').on('click', function () {
+        $(this).off('click');
+        restartGame();
     });
 });
 
