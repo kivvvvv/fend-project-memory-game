@@ -2,6 +2,8 @@
  * Create a list that holds all of your cards
  */
 
+var $CARD_SHOW = null;
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -27,6 +29,7 @@ function shuffle(array) {
 function resetDeck($deckClass) {
     var arrayCards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
     'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
+
     var $cardClass = $($deckClass).children();
     var arrayShuffledCards = shuffle(arrayCards);
 
@@ -51,28 +54,42 @@ function shuffleCardValue($faClass, value) {
     $faClass.addClass('fa ' + value);
 }
 
+function rebindClickCards($hiddenCards) {
+    /**
+     * https://stackoverflow.com/a/31347427
+     */
+    setTimeout(function () {
+        $hiddenCards.on('click', function () {
+            var $this = $(this);
+            pickCard($CARD_SHOW, $this);
+        });
+    }, 0);
+
+    $CARD_SHOW = null;
+}
+
 function showMatchedCard($card1, $card2) {
+    var $bothCards = $card1.add($card2);
     var sAnimationName = 'open show match animated rubberBand';
     var sAnimationEvent = whichAnimationEvent();
 
-    $card1.addClass(sAnimationName).one(sAnimationEvent, function () {
-        $card1.off();
-    });
-    $card2.addClass(sAnimationName).one(sAnimationEvent, function () {
-        $card2.off();
+    $bothCards.addClass(sAnimationName).one(sAnimationEvent, function () {
+        rebindClickCards($hiddenCards);
     });
 }
 
 function showUnmatchedCard($card1, $card2) {
+    var $bothCards = $card1.add($card2);
+    
     var sAnimationEvent = whichAnimationEvent();
     var sAnimationName = 'open show unmatch animated wobble';
     var sCardStatus = 'card';
 
-    $card1.addClass(sAnimationName).one(sAnimationEvent, function (event) {
+    $bothCards.addClass(sAnimationName).one(sAnimationEvent, function (event) {
         resetCardStatus($card1, sCardStatus, event);
-    });
-    $card2.addClass(sAnimationName).one(sAnimationEvent, function (event) {
         resetCardStatus($card2, sCardStatus, event);
+
+        rebindClickCards($hiddenCards);
     });
 }
 
@@ -94,26 +111,29 @@ function whichAnimationEvent() {
     }
 }
 
-function pickCard($card,$this) {
+function pickCard($card, $this) {
     if ($card) {
         if ($this.attr('class') === 'card') {
+            var $hiddenCards = $('li[class="card"]');
+
+            $hiddenCards.off('click');
+
             if ($card.children().attr('class') === $this.children().attr('class')) {
-                showMatchedCard($card, $this);
+                showMatchedCard($card, $this, $hiddenCards);
             } else {
-                showUnmatchedCard($card, $this);
+                showUnmatchedCard($card, $this, $hiddenCards);
             }
-            return null;
+            $CARD_SHOW = null;
         }
     } else {
         $this.addClass('open show');
-        return $this;
+        $CARD_SHOW = $this;
     }
 }
 
 function startGame() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
-    var $card_show = null;
 
     resetDeck($deckClass);
 
@@ -123,8 +143,7 @@ function startGame() {
         });
         $cardClass.on('click', function () {
             var $this = $(this);
-
-            $card_show = pickCard($card_show, $this);
+            pickCard($CARD_SHOW, $this);
         });
 
     }, 3000);
@@ -134,6 +153,7 @@ $(function () {
     startGame();
     $('.restart').children().click(function () {
         startGame();
+        $CARD_SHOW = null;
     });
 });
 
