@@ -94,6 +94,9 @@ function showUnmatchedCard($card1, $card2) {
 }
 
 function whichAnimationEvent() {
+    /**
+     * https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
+     */
     var t,
         el = document.createElement("fakeelement");
 
