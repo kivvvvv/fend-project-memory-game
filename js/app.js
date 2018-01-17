@@ -22,12 +22,7 @@ function shuffle(array) {
  * @description Will recieve <ul class="deck"> in jQuery object then takes out the children element
  *      which is <li class="card"> then add class to display cards and from <li class="card">
  *      takes out its children which is <i class="fa"></i> then add class from the shuffled class.
- * @param {jQuery} $deckClass - The <ul class="deck"> in jQuery object
- * @argument {array} arrayCards - 18 values of FontAwesome class
- * @argument {jQuery} $cardClass - Children element of <ul class="deck"> which is <li class="card">
- * @argument arrayShuffledCards - Shuffled array of arrayCards
- * @argument sTransitionName - Class that include CSS transtion for display fliping cards
- * @argument sTransitionEvent - The transitionend event that is fired when a CSS transition has completed
+ * @param {jQuery} $deckClass The <ul class="deck"> in jQuery object
  */
 function resetDeck($deckClass) {
     var arrayCards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
@@ -66,9 +61,9 @@ function resetDeck($deckClass) {
  *      animationend event which optional for removing all class from specific element and then
  *      reassign it again with the given class name.
  *      Furthermore if provide the animationend event handler, it will be removed from the given element as well.
- * @param {jQuery} $cardClass - The square card which is <li class="card">
- * @param {string} sCardStatus - Class of card to be reassign
- * @param {string} sAnimationEnd - Optional parameter that is an animationend event handler
+ * @param {jQuery} $cardClass The square card which is <li class="card">
+ * @param {string} sCardStatus Class of card to be reassign
+ * @param {string} sAnimationEnd Optional parameter that is an animationend event handler
  */
 function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
     $cardClass.removeClass();
@@ -81,8 +76,8 @@ function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
 /**
  * @description Will recieve <i class="fa"> then remove all class from that element and assign
  *      new class to it from the given class.
- * @param {jQuery} $faClass - The card element which containing the FontAwesome class
- * @param {string} value - The card class which is the FontAwesome class
+ * @param {jQuery} $faClass The card element which containing the FontAwesome class
+ * @param {string} value The card class which is the FontAwesome class
  */
 function shuffleCardValue($faClass, value) {
     $faClass.removeClass();
@@ -110,14 +105,14 @@ function rebindClickCards($hiddenCards) {
  * @description Will take two selected card objects and one card object that has class="card" which
  *      is consider to be hidden card.
  *      For first two cards add class to animate them.
- *      For the last card - hidden card rebind event handler to it.
- * @param {jQuery} $card1 - The selected square card element which is <li class="card"> in jQuery object
- * @param {jQuery} $card2 - The another selected square card element which is <li class="card"> in jQuery object
- * @param {jQuery} $hiddenCards - All other square card elements which is <li class="card"> in jQuery object
+ *      For the last card - hidden card, rebind event handler to it.
+ * @param {jQuery} $card1 The selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $card2 The another selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $hiddenCards All other square card elements which is <li class="card"> in jQuery object
  */
 function showMatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
-    var sAnimationName = 'match animated rubberBand';
+    var sAnimationName = 'open show match animated rubberBand';
     var sAnimationEvent = whichAnimationEvent();
 
     $bothCards.addClass(sAnimationName).one(sAnimationEvent, function () {
@@ -125,6 +120,15 @@ function showMatchedCard($card1, $card2, $hiddenCards) {
     });
 }
 
+/**
+ * @description Will take two selected card objects and one card object that has class="card" which
+ *      is consider to be hidden card.
+ *      For first two cards add class to animate them and clear card classes afterward.
+ *      For the last card - hidden card, rebind event handler to it.
+ * @param {jQuery} $card1 The selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $card2 The another selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $hiddenCards All other square card elements which is <li class="card"> in jQuery object
+ */
 function showUnmatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
 
@@ -140,10 +144,12 @@ function showUnmatchedCard($card1, $card2, $hiddenCards) {
     });
 }
 
+/**
+ * @description Will create fake element then searching for the trasition property inside it.
+ *      If found it then return it back.
+ * @link https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
+ */
 function whichTransitionEvent() {
-    /**
-     * https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
-     */
     var t,
         el = document.createElement("fakeelement");
 
@@ -161,10 +167,12 @@ function whichTransitionEvent() {
     }
 }
 
+/**
+ * @description Will create fake element then searching for the animation property inside it.
+ *      If found it then return it back.
+ * @link https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
+ */
 function whichAnimationEvent() {
-    /**
-     * https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
-     */
     var t,
         el = document.createElement("fakeelement");
 
@@ -182,6 +190,9 @@ function whichAnimationEvent() {
     }
 }
 
+/**
+ * @description Will show and increment display move. Also alert when game is ended.
+ */
 function showMove() {
     $('span.moves').text(++MOVE);
 
@@ -200,6 +211,13 @@ function showMove() {
     }
 }
 
+/**
+ * @description Will recieve selected card and selecting card like <i class="fa"> as jQuery object
+ *      then determine whether show animation match card or unmatch card or keep the selecting card
+ *      value incase that there is no selecting card.
+ * @param {jQuery} $card Selected card as jQuery object
+ * @param {jQuery} $this Selecting card as jQuery object
+ */
 function pickCard($card, $this) {
     if ($card) {
         if ($this.attr('class') === 'card') {
@@ -243,10 +261,10 @@ function restartGame() {
     startGame();
 }
 
+/**
+ * @link http://www.vikaskbh.com/javascript-settimeout-function-jquery-examples-and-chaining-it-with-aftertime-plugin/
+ */
 jQuery.fn.extend({
-    /**
-     * http://www.vikaskbh.com/javascript-settimeout-function-jquery-examples-and-chaining-it-with-aftertime-plugin/
-     */
     afterTime: function (sec, callback) {
         that = $(this);
         setTimeout(function () {
@@ -258,6 +276,9 @@ jQuery.fn.extend({
     }
 });
 
+/**
+ * @description Change black star to white star
+ */
 function removeStar() {
     var $starsClass = $('.stars');
     var $faStarsClass = $starsClass.find('.fa-star');
@@ -268,6 +289,9 @@ function removeStar() {
     }
 }
 
+/**
+ * @description Change all star to black star
+ */
 function resetStar() {
     var $starsClass = $('.stars');
     var $faStarsClass = $starsClass.find('.fa');
