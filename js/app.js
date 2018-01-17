@@ -199,9 +199,10 @@ function showMove() {
 
     if (SCORE === 8) {
         TIMER.stop();
+        var finishTime = $('.timer').text();
         swal({
             title: 'Congratulations! You won!',
-            text: 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
+            text: 'In ' + finishTime + ' with ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
             icon: 'success',
             button: 'Play again!'
         })
