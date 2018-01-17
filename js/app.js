@@ -34,13 +34,24 @@ function resetDeck($deckClass) {
     var $cardClass = $($deckClass).children();
     var arrayShuffledCards = shuffle(arrayCards);
 
+    var sTransitionName = 'card open';
+    var sTransitionEvent = whichTransitionEvent();
+
     $cardClass.each(function () {
         var $faClass = $(this).children();
 
         shuffleCardValue($faClass, arrayShuffledCards.pop())
     });
-    
-    resetCardStatus($cardClass, 'card open show');
+
+    $cardClass.removeClass();
+    $cardClass.addClass(sTransitionName + ' show').one(sTransitionEvent).afterTime(3000, function () {
+        $cardClass.removeClass();
+        $cardClass.addClass('card');
+    }).afterTime(3000, function () {
+        $('.restart').one('click', function () {
+            restartGame();
+        });
+    });
 }
 
 function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
@@ -95,6 +106,27 @@ function showUnmatchedCard($card1, $card2, $hiddenCards) {
     });
 }
 
+function whichTransitionEvent() {
+    /**
+     * https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
+     */
+    var t,
+        el = document.createElement("fakeelement");
+  
+    var transitions = {
+      "transition"      : "transitionend",
+      "OTransition"     : "oTransitionEnd",
+      "MozTransition"   : "transitionend",
+      "WebkitTransition": "webkitTransitionEnd"
+    }
+  
+    for (t in transitions){
+      if (el.style[t] !== undefined){
+        return transitions[t];
+      }
+    }
+  }
+
 function whichAnimationEvent() {
     /**
      * https://jonsuh.com/blog/detect-the-end-of-css-animations-and-transitions-with-javascript/
@@ -118,6 +150,7 @@ function whichAnimationEvent() {
 
 function showMove() {
     $('span.moves').text(++MOVE);
+
     if (SCORE === 8) {
         swal("Good job!", "You clicked the button! with move " + MOVE, "success");
     }
@@ -135,7 +168,6 @@ function pickCard($card, $this) {
                 SCORE++;
             } else {
                 showUnmatchedCard($card, $this, $hiddenCards);
-
             }
 
             $CARD_SHOW = null;
@@ -153,15 +185,10 @@ function startGame() {
 
     resetDeck($deckClass);
 
-    setTimeout(function () {
-        $cardClass.each(function () {
-            resetCardStatus($(this), 'card');
-        });
-        $cardClass.on('click', function () {
-            var $this = $(this);
-            pickCard($CARD_SHOW, $this);
-        });
-    }, 3000);
+    $cardClass.on('click', function () {
+        var $this = $(this);
+        pickCard($CARD_SHOW, $this);
+    });
 }
 
 function restartGame() {
@@ -173,10 +200,24 @@ function restartGame() {
     startGame();
 }
 
+jQuery.fn.extend({
+    /**
+     * http://www.vikaskbh.com/javascript-settimeout-function-jquery-examples-and-chaining-it-with-aftertime-plugin/
+     */
+    afterTime: function(sec, callback){
+        that = $(this);
+        setTimeout(function(){
+            console.log("Calling call back");
+            callback.call(that);
+            return that;
+        },sec);
+       return this;
+    }
+});
+
 $(function () {
     startGame();
-    $('.restart').on('click', function () {
-        $(this).off('click');
+    $('.restart').one('click', function () {
         restartGame();
     });
 });
