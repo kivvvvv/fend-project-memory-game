@@ -1,17 +1,7 @@
-/*
- * Create a list that holds all of your cards
- */
-
 var $CARD_SHOW = null;
 var SCORE = 0;
 var MOVE = 0;
 var STARS = 3;
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -28,9 +18,20 @@ function shuffle(array) {
     return array;
 }
 
+/**
+ * @description Will recieve <ul class="deck"> in jQuery object then takes out the children element
+ *      which is <li class="card"> then add class to display cards and from <li class="card">
+ *      takes out its children which is <i class="fa"></i> then add class from the shuffled class.
+ * @param {jQuery} $deckClass - The <ul class="deck"> in jQuery object
+ * @argument {array} arrayCards - 18 values of FontAwesome class
+ * @argument {jQuery} $cardClass - Children element of <ul class="deck"> which is <li class="card">
+ * @argument arrayShuffledCards - Shuffled array of arrayCards
+ * @argument sTransitionName - Class that include CSS transtion for display fliping cards
+ * @argument sTransitionEvent - The transitionend event that is fired when a CSS transition has completed
+ */
 function resetDeck($deckClass) {
     var arrayCards = ['fa-diamond', 'fa-diamond', 'fa-paper-plane-o', 'fa-paper-plane-o', 'fa-anchor', 'fa-anchor', 'fa-bolt', 'fa-bolt',
-    'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
+        'fa-cube', 'fa-cube', 'fa-leaf', 'fa-leaf', 'fa-bomb', 'fa-bomb', 'fa-bicycle', 'fa-bicycle'];
 
     var $cardClass = $($deckClass).children();
     var arrayShuffledCards = shuffle(arrayCards);
@@ -60,6 +61,15 @@ function resetDeck($deckClass) {
     });
 }
 
+/**
+ * @description Will recieve <li class="card"> in jQuery object, class name and maybe recieving
+ *      animationend event which optional for removing all class from specific element and then
+ *      reassign it again with the given class name.
+ *      Furthermore if provide the animationend event handler, it will be removed from the given element as well.
+ * @param {jQuery} $cardClass - The square card which is <li class="card">
+ * @param {string} sCardStatus - Class of card to be reassign
+ * @param {string} sAnimationEnd - Optional parameter that is an animationend event handler
+ */
 function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
     $cardClass.removeClass();
     $cardClass.addClass(sCardStatus);
@@ -68,15 +78,24 @@ function resetCardStatus($cardClass, sCardStatus, sAnimationEnd = null) {
     }
 }
 
+/**
+ * @description Will recieve <i class="fa"> then remove all class from that element and assign
+ *      new class to it from the given class.
+ * @param {jQuery} $faClass - The card element which containing the FontAwesome class
+ * @param {string} value - The card class which is the FontAwesome class
+ */
 function shuffleCardValue($faClass, value) {
     $faClass.removeClass();
     $faClass.addClass('fa ' + value);
 }
 
+/**
+ * @description Will take the square card element <li class="card"> that has class="card"
+ *      then bind click event handler to it.
+ * @param {jQuery} $hiddenCards - The square card element which is <li class="card"> in jQuery object
+ * @link https://stackoverflow.com/a/31347427
+ */
 function rebindClickCards($hiddenCards) {
-    /**
-     * https://stackoverflow.com/a/31347427
-     */
     setTimeout(function () {
         $hiddenCards.on('click', function () {
             var $this = $(this);
@@ -87,9 +106,18 @@ function rebindClickCards($hiddenCards) {
     $CARD_SHOW = null;
 }
 
+/**
+ * @description Will take two selected card objects and one card object that has class="card" which
+ *      is consider to be hidden card.
+ *      For first two cards add class to animate them.
+ *      For the last card - hidden card rebind event handler to it.
+ * @param {jQuery} $card1 - The selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $card2 - The another selected square card element which is <li class="card"> in jQuery object
+ * @param {jQuery} $hiddenCards - All other square card elements which is <li class="card"> in jQuery object
+ */
 function showMatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
-    var sAnimationName = 'open show match animated rubberBand';
+    var sAnimationName = 'match animated rubberBand';
     var sAnimationEvent = whichAnimationEvent();
 
     $bothCards.addClass(sAnimationName).one(sAnimationEvent, function () {
@@ -99,7 +127,7 @@ function showMatchedCard($card1, $card2, $hiddenCards) {
 
 function showUnmatchedCard($card1, $card2, $hiddenCards) {
     var $bothCards = $card1.add($card2);
-    
+
     var sAnimationEvent = whichAnimationEvent();
     var sAnimationName = 'open show unmatch animated wobble';
     var sCardStatus = 'card';
@@ -118,20 +146,20 @@ function whichTransitionEvent() {
      */
     var t,
         el = document.createElement("fakeelement");
-  
+
     var transitions = {
-      "transition"      : "transitionend",
-      "OTransition"     : "oTransitionEnd",
-      "MozTransition"   : "transitionend",
-      "WebkitTransition": "webkitTransitionEnd"
+        "transition": "transitionend",
+        "OTransition": "oTransitionEnd",
+        "MozTransition": "transitionend",
+        "WebkitTransition": "webkitTransitionEnd"
     }
-  
-    for (t in transitions){
-      if (el.style[t] !== undefined){
-        return transitions[t];
-      }
+
+    for (t in transitions) {
+        if (el.style[t] !== undefined) {
+            return transitions[t];
+        }
     }
-  }
+}
 
 function whichAnimationEvent() {
     /**
@@ -158,18 +186,17 @@ function showMove() {
     $('span.moves').text(++MOVE);
 
     if (SCORE === 8) {
-        // swal('Congratulations! You won!', 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). Woooooo!', "success");
         swal({
             title: 'Congratulations! You won!',
             text: 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
             icon: 'success',
             button: 'Play again!'
         })
-        .then((willRestart) => {
-            if (willRestart) {
-                $('div.restart').trigger('click');
-            }
-        });
+            .then((willRestart) => {
+                if (willRestart) {
+                    $('div.restart').trigger('click');
+                }
+            });
     }
 }
 
@@ -210,6 +237,7 @@ function restartGame() {
     MOVE = 0;
     STARS = 3;
 
+    $('.deck').children().off('click');
     $('span.moves').text(MOVE);
     resetStar();
     startGame();
@@ -219,14 +247,14 @@ jQuery.fn.extend({
     /**
      * http://www.vikaskbh.com/javascript-settimeout-function-jquery-examples-and-chaining-it-with-aftertime-plugin/
      */
-    afterTime: function(sec, callback){
+    afterTime: function (sec, callback) {
         that = $(this);
-        setTimeout(function(){
+        setTimeout(function () {
             console.log("Calling call back");
             callback.call(that);
             return that;
-        },sec);
-       return this;
+        }, sec);
+        return this;
     }
 });
 
@@ -255,14 +283,3 @@ $(function () {
         restartGame();
     });
 });
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
