@@ -3,6 +3,7 @@ var SCORE = 0;
 var MOVE = 0;
 var WRONG = 0;
 var TIMER = null;
+var TIMER_START = false;
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -223,6 +224,9 @@ function showMove() {
  * @param {jQuery} $this Selecting card as jQuery object
  */
 function pickCard($card, $this) {
+    if (!TIMER_START) {
+        startTimer();
+    }
     if ($card) {
         if ($this.attr('class') === 'card') {
             var $hiddenCards = $('li[class="card"]');
@@ -251,8 +255,6 @@ function startGame() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
 
-    startTimer();
-
     resetDeck($deckClass);
 }
 
@@ -261,8 +263,10 @@ function restartGame() {
     SCORE = 0;
     MOVE = 0;
     WRONG = 0;
+    TIMER_START = false;
 
-    TIMER.reset();
+    TIMER.stop();
+    $('.timer').text('00:00:00');
     $('.deck').children().off('click');
     $('span.moves').text(MOVE);
     resetStars();
@@ -325,6 +329,7 @@ function startTimer() {
     TIMER.addEventListener('secondsUpdated', function (e) {
         $('.timer').html(TIMER.getTimeValues().toString());
     });
+    TIMER_START = true;
 }
 
 $(function () {
