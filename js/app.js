@@ -2,6 +2,7 @@ var $CARD_SHOW = null;
 var SCORE = 0;
 var MOVE = 0;
 var STARS = 3;
+var TIMER = null;
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -197,6 +198,7 @@ function showMove() {
     $('span.moves').text(++MOVE);
 
     if (SCORE === 8) {
+        TIMER.stop();
         swal({
             title: 'Congratulations! You won!',
             text: 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
@@ -246,6 +248,8 @@ function startGame() {
     var $deckClass = $('.deck');
     var $cardClass = $deckClass.children();
 
+    startTimer();
+
     resetDeck($deckClass);
 }
 
@@ -255,6 +259,7 @@ function restartGame() {
     MOVE = 0;
     STARS = 3;
 
+    TIMER.reset();
     $('.deck').children().off('click');
     $('span.moves').text(MOVE);
     resetStar();
@@ -268,7 +273,6 @@ jQuery.fn.extend({
     afterTime: function (sec, callback) {
         that = $(this);
         setTimeout(function () {
-            console.log("Calling call back");
             callback.call(that);
             return that;
         }, sec);
@@ -299,6 +303,14 @@ function resetStar() {
     $faStarsClass.each(function () {
         $(this).removeClass().addClass('fa fa-star');
     })
+}
+
+function startTimer() {
+    TIMER = new Timer();
+    TIMER.start();
+    TIMER.addEventListener('secondsUpdated', function (e) {
+        $('.timer').html(TIMER.getTimeValues().toString());
+    });
 }
 
 $(function () {

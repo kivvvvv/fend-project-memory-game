@@ -76,7 +76,7 @@ h1 {
     cursor: default;
 }
 
-.deck .card.show {  
+.deck .card.show {
     font-size: 33px;
 }
 
@@ -110,6 +110,11 @@ h1 {
 .score-panel .stars li {
     list-style: none;
     display: inline-block;
+}
+
+.score-panel .timer {
+    display: inline-block;
+    padding-left: 20px;
 }
 
 .score-panel .restart {
