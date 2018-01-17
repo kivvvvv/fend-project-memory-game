@@ -3,8 +3,9 @@
  */
 
 var $CARD_SHOW = null;
-var SCORE = 0;
+var SCORE = 7;
 var MOVE = 0;
+var STARS = 3;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -50,6 +51,11 @@ function resetDeck($deckClass) {
     }).afterTime(3000, function () {
         $('.restart').one('click', function () {
             restartGame();
+        });
+    }).afterTime(3000, function () {
+        $cardClass.on('click', function () {
+            var $this = $(this);
+            pickCard($CARD_SHOW, $this);
         });
     });
 }
@@ -152,7 +158,18 @@ function showMove() {
     $('span.moves').text(++MOVE);
 
     if (SCORE === 8) {
-        swal("Good job!", "You clicked the button! with move " + MOVE, "success");
+        // swal('Congratulations! You won!', 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). Woooooo!', "success");
+        swal({
+            title: 'Congratulations! You won!',
+            text: 'With ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
+            icon: 'success',
+            button: 'Play again!'
+        })
+        .then((willRestart) => {
+            if (willRestart) {
+                $('div.restart').trigger('click');
+            }
+        });
     }
 }
 
@@ -168,6 +185,7 @@ function pickCard($card, $this) {
                 SCORE++;
             } else {
                 showUnmatchedCard($card, $this, $hiddenCards);
+                removeStar();
             }
 
             $CARD_SHOW = null;
@@ -184,19 +202,16 @@ function startGame() {
     var $cardClass = $deckClass.children();
 
     resetDeck($deckClass);
-
-    $cardClass.on('click', function () {
-        var $this = $(this);
-        pickCard($CARD_SHOW, $this);
-    });
 }
 
 function restartGame() {
     $CARD_SHOW = null;
     SCORE = 0;
     MOVE = 0;
+    STARS = 3;
 
     $('span.moves').text(MOVE);
+    resetStar();
     startGame();
 }
 
@@ -215,13 +230,31 @@ jQuery.fn.extend({
     }
 });
 
+function removeStar() {
+    var $starsClass = $('.stars');
+    var $faStarsClass = $starsClass.find('.fa-star');
+
+    if (STARS > 0) {
+        $faStarsClass.last().removeClass('fa-star').addClass('fa-star-o');
+        STARS--;
+    }
+}
+
+function resetStar() {
+    var $starsClass = $('.stars');
+    var $faStarsClass = $starsClass.find('.fa');
+
+    $faStarsClass.each(function () {
+        $(this).removeClass().addClass('fa fa-star');
+    })
+}
+
 $(function () {
     startGame();
     $('.restart').one('click', function () {
         restartGame();
     });
 });
-
 
 /*
  * set up the event listener for a card. If a card is clicked:
