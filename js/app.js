@@ -3,7 +3,7 @@
  */
 
 var $CARD_SHOW = null;
-var SCORE = 7;
+var SCORE = 0;
 var MOVE = 0;
 var STARS = 3;
 /*
