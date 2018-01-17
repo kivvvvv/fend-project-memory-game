@@ -1,7 +1,7 @@
 var $CARD_SHOW = null;
 var SCORE = 0;
 var MOVE = 0;
-var STARS = 3;
+var WRONG = 0;
 var TIMER = null;
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -200,9 +200,10 @@ function showMove() {
     if (SCORE === 8) {
         TIMER.stop();
         var finishTime = $('.timer').text();
+
         swal({
             title: 'Congratulations! You won!',
-            text: 'In ' + finishTime + ' with ' + MOVE + ' Moves and ' + STARS + ' Star(s). \nWoooooo!',
+            text: 'In ' + finishTime + ' with ' + MOVE + ' Moves and ' + checkStars() + ' Star(s). \nWoooooo!',
             icon: 'success',
             button: 'Play again!'
         })
@@ -233,7 +234,8 @@ function pickCard($card, $this) {
                 SCORE++;
             } else {
                 showUnmatchedCard($card, $this, $hiddenCards);
-                removeStar();
+                WRONG++;
+                checkStars();
             }
 
             $CARD_SHOW = null;
@@ -258,12 +260,12 @@ function restartGame() {
     $CARD_SHOW = null;
     SCORE = 0;
     MOVE = 0;
-    STARS = 3;
+    WRONG = 0;
 
     TIMER.reset();
     $('.deck').children().off('click');
     $('span.moves').text(MOVE);
-    resetStar();
+    resetStars();
     startGame();
 }
 
@@ -283,21 +285,32 @@ jQuery.fn.extend({
 
 /**
  * @description Change black star to white star
+ * @returns {number} A number of jQuery object which is <i class="fa fa-star">
  */
-function removeStar() {
+function checkStars() {
     var $starsClass = $('.stars');
     var $faStarsClass = $starsClass.find('.fa-star');
-
-    if (STARS > 0) {
+    var countStars = $faStarsClass.length;
+    var removeStar = function () {
         $faStarsClass.last().removeClass('fa-star').addClass('fa-star-o');
-        STARS--;
+    };
+
+    switch(WRONG) {
+        case 3:
+            removeStar();
+            break;
+        case 6:
+            removeStar();
+            break;
     }
+
+    return countStars;
 }
 
 /**
  * @description Change all star to black star
  */
-function resetStar() {
+function resetStars() {
     var $starsClass = $('.stars');
     var $faStarsClass = $starsClass.find('.fa');
 
