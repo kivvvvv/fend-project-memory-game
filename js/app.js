@@ -1,9 +1,11 @@
-var $CARD_SHOW = null;
-var SCORE = 0;
-var MOVE = 0;
-var WRONG = 0;
-var TIMER = null;
-var TIMER_START = false;
+var GAME_STATUS = {
+    $cardShow : null,
+    score : 0,
+    move : 0,
+    wrongGuess : 0,
+    objTime : null,
+    isTimeStart : false
+};
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -53,7 +55,7 @@ function resetDeck($deckClass) {
     }).afterTime(3000, function () {
         $cardClass.on('click', function () {
             var $this = $(this);
-            pickCard($CARD_SHOW, $this);
+            pickCard(GAME_STATUS.$cardShow, $this);
         });
     });
 }
@@ -96,11 +98,11 @@ function rebindClickCards($hiddenCards) {
     setTimeout(function () {
         $hiddenCards.on('click', function () {
             var $this = $(this);
-            pickCard($CARD_SHOW, $this);
+            pickCard(GAME_STATUS.$cardShow, $this);
         });
     }, 0);
 
-    $CARD_SHOW = null;
+    GAME_STATUS.$cardShow = null;
 }
 
 /**
@@ -196,15 +198,15 @@ function whichAnimationEvent() {
  * @description Will show and increment display move. Also alert when game is ended.
  */
 function showMove() {
-    $('span.moves').text(++MOVE);
+    $('span.moves').text(++GAME_STATUS.move);
 
-    if (SCORE === 8) {
-        TIMER.stop();
+    if (GAME_STATUS.score === 8) {
+        GAME_STATUS.objTime.stop();
         var finishTime = $('.timer').text();
 
         swal({
             title: 'Congratulations! You won!',
-            text: 'In ' + finishTime + ' with ' + MOVE + ' Moves and ' + checkStars() + ' Star(s). \nWoooooo!',
+            text: 'In ' + finishTime + ' with ' + GAME_STATUS.move + ' Moves and ' + checkStars() + ' Star(s). \nWoooooo!',
             icon: 'success',
             button: 'Play again!'
         })
@@ -224,7 +226,7 @@ function showMove() {
  * @param {jQuery} $this Selecting card as jQuery object
  */
 function pickCard($card, $this) {
-    if (!TIMER_START) {
+    if (!GAME_STATUS.isTimeStart) {
         startTimer();
     }
     if ($card) {
@@ -235,19 +237,19 @@ function pickCard($card, $this) {
 
             if ($card.children().attr('class') === $this.children().attr('class')) {
                 showMatchedCard($card, $this, $hiddenCards);
-                SCORE++;
+                GAME_STATUS.score++;
             } else {
                 showUnmatchedCard($card, $this, $hiddenCards);
-                WRONG++;
+                GAME_STATUS.wrongGuess++;
                 checkStars();
             }
 
-            $CARD_SHOW = null;
+            GAME_STATUS.$cardShow = null;
             showMove();
         }
     } else {
         $this.addClass('open show');
-        $CARD_SHOW = $this;
+        GAME_STATUS.$cardShow = $this;
     }
 }
 
@@ -259,16 +261,16 @@ function startGame() {
 }
 
 function restartGame() {
-    $CARD_SHOW = null;
-    SCORE = 0;
-    MOVE = 0;
-    WRONG = 0;
-    TIMER_START = false;
+    GAME_STATUS.$cardShow = null;
+    GAME_STATUS.score = 0;
+    GAME_STATUS.move = 0;
+    GAME_STATUS.wrongGuess = 0;
+    GAME_STATUS.isTimeStart = false;
 
-    TIMER.stop();
+    GAME_STATUS.objTime.stop();
     $('.timer').text('00:00:00');
     $('.deck').children().off('click');
-    $('span.moves').text(MOVE);
+    $('span.moves').text(GAME_STATUS.move);
     resetStars();
     startGame();
 }
@@ -299,7 +301,7 @@ function checkStars() {
         $faStarsClass.last().removeClass('fa-star').addClass('fa-star-o');
     };
 
-    switch(WRONG) {
+    switch(GAME_STATUS.wrongGuess) {
         case 3:
             removeStar();
             break;
@@ -324,12 +326,12 @@ function resetStars() {
 }
 
 function startTimer() {
-    TIMER = new Timer();
-    TIMER.start();
-    TIMER.addEventListener('secondsUpdated', function (e) {
-        $('.timer').html(TIMER.getTimeValues().toString());
+    GAME_STATUS.objTime = new Timer();
+    GAME_STATUS.objTime.start();
+    GAME_STATUS.objTime.addEventListener('secondsUpdated', function (e) {
+        $('.timer').html(GAME_STATUS.objTime.getTimeValues().toString());
     });
-    TIMER_START = true;
+    GAME_STATUS.isTimeStart = true;
 }
 
 $(function () {
